@@ -1,0 +1,11 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-brand: #0a0a0a;
+  --color-brand-fg: #fafafa;
+  --color-accent: #c9a961;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+html, body { height: 100%; }
+button:not(:disabled) { cursor: pointer; }

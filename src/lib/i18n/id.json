@@ -1,0 +1,58 @@
+{
+  "common": {
+    "back": "Kembali",
+    "next": "Lanjut",
+    "continue": "Lanjut",
+    "skip": "Lewati — tanpa tambahan",
+    "from": "mulai",
+    "min": "menit",
+    "any_barber": "Barber mana saja",
+    "male_only": "Khusus pria",
+    "loading": "Memuat…"
+  },
+  "steps": {
+    "category": "Kategori layanan",
+    "service": "Pilih layanan",
+    "addons": "Tambahkan ekstra (opsional)",
+    "barber": "Pilih barber",
+    "time": "Pilih waktu",
+    "details": "Data Anda",
+    "confirm": "Terkirim"
+  },
+  "service": {
+    "package_title": "Paket",
+    "onsite_title": "Di Tempat",
+    "addon_title": "Tambahan",
+    "oncall_title": "Panggilan",
+    "running_total": "Total"
+  },
+  "time": {
+    "no_slots": "Tidak ada slot untuk tanggal ini.",
+    "pick_date": "Tanggal"
+  },
+  "details": {
+    "name": "Nama Anda",
+    "phone": "Nomor WhatsApp",
+    "phone_hint": "Kami akan WhatsApp untuk konfirmasi.",
+    "address": "Alamat",
+    "address_hint": "Ke mana barber datang?",
+    "submit": "Kirim booking",
+    "submitting": "Mengirim…",
+    "consent": "Dengan mengirim, Anda setuju dihubungi via WhatsApp."
+  },
+  "confirm": {
+    "title": "Permintaan diterima",
+    "body": "Kami akan WhatsApp Anda untuk konfirmasi booking.",
+    "ref": "Referensi",
+    "home": "Kembali ke awal"
+  },
+  "errors": {
+    "missing_name": "Mohon masukkan nama Anda.",
+    "missing_phone": "Mohon masukkan nomor WhatsApp yang valid.",
+    "missing_address": "Alamat wajib untuk panggilan ke rumah.",
+    "slot_taken": "Slot baru saja terisi. Mohon pilih yang lain.",
+    "turnstile": "Mohon selesaikan cek anti-spam.",
+    "rate_limit": "Terlalu banyak permintaan. Mohon tunggu sebentar.",
+    "generic": "Terjadi kesalahan. Mohon coba lagi."
+  }
+}

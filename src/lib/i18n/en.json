@@ -1,0 +1,58 @@
+{
+  "common": {
+    "back": "Back",
+    "next": "Next",
+    "continue": "Continue",
+    "skip": "Skip — no extras",
+    "from": "from",
+    "min": "min",
+    "any_barber": "Any available barber",
+    "male_only": "Male only",
+    "loading": "Loading…"
+  },
+  "steps": {
+    "category": "Service category",
+    "service": "Select service",
+    "addons": "Add extras (optional)",
+    "barber": "Select barber",
+    "time": "Pick a time",
+    "details": "Your details",
+    "confirm": "Confirmed"
+  },
+  "service": {
+    "package_title": "Packages",
+    "onsite_title": "On-Site",
+    "addon_title": "Add-Ons",
+    "oncall_title": "On-Call",
+    "running_total": "Total"
+  },
+  "time": {
+    "no_slots": "No slots available for this date.",
+    "pick_date": "Date"
+  },
+  "details": {
+    "name": "Your name",
+    "phone": "WhatsApp number",
+    "phone_hint": "We'll WhatsApp you to confirm.",
+    "address": "Address",
+    "address_hint": "Where should the barber come?",
+    "submit": "Request booking",
+    "submitting": "Submitting…",
+    "consent": "By submitting you agree to be contacted on WhatsApp."
+  },
+  "confirm": {
+    "title": "Request received",
+    "body": "We'll WhatsApp you shortly to confirm your booking.",
+    "ref": "Reference",
+    "home": "Back to start"
+  },
+  "errors": {
+    "missing_name": "Please enter your name.",
+    "missing_phone": "Please enter a valid WhatsApp number.",
+    "missing_address": "Address is required for on-call bookings.",
+    "slot_taken": "This slot was just taken. Please pick another.",
+    "turnstile": "Please complete the spam check.",
+    "rate_limit": "Too many requests. Please wait a minute and try again.",
+    "generic": "Something went wrong. Please try again."
+  }
+}

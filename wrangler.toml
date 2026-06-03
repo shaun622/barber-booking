@@ -1,0 +1,31 @@
+name = "balis-barber-booking"
+compatibility_date = "2025-12-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".svelte-kit/cloudflare"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "balis_barber"
+database_id = "REPLACE_WITH_DB_ID_AFTER_wrangler_d1_create"
+migrations_dir = "migrations"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "REPLACE_WITH_RATE_LIMIT_KV_ID"
+
+[[kv_namespaces]]
+binding = "SLOT_LOCKS"
+id = "REPLACE_WITH_SLOT_LOCKS_KV_ID"
+
+[vars]
+SHOP_TZ = "Asia/Makassar"
+SHOP_WHATSAPP = "+6281337995251"
+EMAIL_FROM = "bookings@balisbarber.com"
+EMAIL_TO_OWNER = "owner@balisbarber.com"
+
+# Secrets (DO NOT put real values here — use `wrangler pages secret put NAME`):
+#   TURNSTILE_SECRET, ADMIN_PASSWORD_HASH, SESSION_SECRET,
+#   RESEND_API_KEY, WHATSAPP_TOKEN, WHATSAPP_PHONE_ID, WHATSAPP_OWNER_NUMBER
+#
+# Public vars (set in dashboard Pages > Settings > Env vars or here):
+#   TURNSTILE_SITE_KEY
