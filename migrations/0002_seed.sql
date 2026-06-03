@@ -49,11 +49,14 @@ INSERT INTO barbers (id, name, sort_order) VALUES
   (2, 'Simon',   20),
   (3, 'Min Yun', 30);
 
--- Working hours: 09:00–19:00 every day for all three.
-INSERT INTO working_hours (barber_id, day_of_week, open_time, close_time)
-SELECT b.id, d.dow, '09:00', '19:00'
-FROM barbers b
-CROSS JOIN (
-  SELECT 0 AS dow UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL
-  SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6
-) d;
+-- Working hours: 09:00–19:00 every day (day_of_week 0=Sun..6=Sat) for all three barbers.
+INSERT INTO working_hours (barber_id, day_of_week, open_time, close_time) VALUES
+  (1, 0, '09:00', '19:00'), (1, 1, '09:00', '19:00'), (1, 2, '09:00', '19:00'),
+  (1, 3, '09:00', '19:00'), (1, 4, '09:00', '19:00'), (1, 5, '09:00', '19:00'),
+  (1, 6, '09:00', '19:00'),
+  (2, 0, '09:00', '19:00'), (2, 1, '09:00', '19:00'), (2, 2, '09:00', '19:00'),
+  (2, 3, '09:00', '19:00'), (2, 4, '09:00', '19:00'), (2, 5, '09:00', '19:00'),
+  (2, 6, '09:00', '19:00'),
+  (3, 0, '09:00', '19:00'), (3, 1, '09:00', '19:00'), (3, 2, '09:00', '19:00'),
+  (3, 3, '09:00', '19:00'), (3, 4, '09:00', '19:00'), (3, 5, '09:00', '19:00'),
+  (3, 6, '09:00', '19:00');

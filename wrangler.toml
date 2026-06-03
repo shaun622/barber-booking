@@ -6,16 +6,16 @@ pages_build_output_dir = ".svelte-kit/cloudflare"
 [[d1_databases]]
 binding = "DB"
 database_name = "balis_barber"
-database_id = "REPLACE_WITH_DB_ID_AFTER_wrangler_d1_create"
+database_id = "56e33fa2-be0a-4f94-aa74-d76e798bf76b"
 migrations_dir = "migrations"
 
 [[kv_namespaces]]
 binding = "RATE_LIMIT"
-id = "REPLACE_WITH_RATE_LIMIT_KV_ID"
+id = "66d14b22c8d546a6b6e0d0a80d1bb560"
 
 [[kv_namespaces]]
 binding = "SLOT_LOCKS"
-id = "REPLACE_WITH_SLOT_LOCKS_KV_ID"
+id = "f84874b840494b04b324d770eda25641"
 
 [vars]
 SHOP_TZ = "Asia/Makassar"
