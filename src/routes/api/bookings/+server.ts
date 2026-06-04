@@ -12,7 +12,7 @@ import {
 import { loadFlow, clearFlow } from '$lib/flow';
 import { computeAvailability } from '$lib/availability';
 import { acquireSlotLock, buildSlotKey, rateLimit } from '$lib/rateLimit';
-import { notifyOwner } from '$lib/notify';
+import { sendBookingNotifications } from '$lib/notify';
 
 async function verifyTurnstile(token: string, secret: string, ip?: string): Promise<boolean> {
   if (!secret) return true; // not configured — skip in dev
@@ -153,7 +153,7 @@ export const POST: RequestHandler = async ({ request, cookies, platform, getClie
 
   const barber = barbers.find((b) => b.id === assignedBarberId) ?? null;
   platform.context.waitUntil(
-    notifyOwner({ booking, baseService: base, addons, barber, env })
+    sendBookingNotifications({ booking, baseService: base, addons, barber, env })
   );
 
   return json({ id });
