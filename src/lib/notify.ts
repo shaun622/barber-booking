@@ -30,6 +30,7 @@ function buildSummary(ctx: NotifyContext): string {
     ``,
     `Name: ${booking.customer_name}`,
     `WhatsApp: ${booking.whatsapp_phone}`,
+    booking.email ? `Email: ${booking.email}` : '',
     `When: ${formatWitaTime(booking.starts_at)} (${booking.duration_min_total} min)`,
     `Barber: ${barber ? barber.name : 'Any available'}`,
     booking.address ? `Address: ${booking.address}` : '',

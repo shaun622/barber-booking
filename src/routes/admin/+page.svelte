@@ -49,6 +49,7 @@
                 {b.customer_name}
                 <span class="text-[var(--color-bone-dim)] tnum font-normal">· {b.whatsapp_phone}</span>
               </div>
+              {#if b.email}<div class="text-sm text-[var(--color-bone-dim)]">{b.email}</div>{/if}
               <div class="text-sm text-[var(--color-bone-faint)] mt-0.5 tnum">
                 #{b.id} · {fmt(b.starts_at)} · {b.duration_min_total} min · {idr(b.price_idr_total)}
               </div>

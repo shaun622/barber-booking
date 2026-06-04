@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
+  import MapCard from '$lib/components/MapCard.svelte';
   let { data }: { data: PageData } = $props();
 
   const t = $derived(
@@ -87,6 +88,13 @@
       </a>
     {/each}
   </div>
+
+  <!-- Location -->
+  <section class="pt-6 pb-2">
+    <div class="max-w-3xl">
+      <MapCard lang={data.lang} />
+    </div>
+  </section>
 
   <!-- Group CTA -->
   <div class="py-8">

@@ -55,6 +55,7 @@ export interface Booking {
   id: number;
   customer_name: string;
   whatsapp_phone: string;
+  email: string | null;
   barber_id: number | null;
   base_service_id: number;
   addon_ids: string;
@@ -135,14 +136,15 @@ export async function createBooking(
   const res = await db
     .prepare(
       `INSERT INTO bookings
-        (customer_name, whatsapp_phone, barber_id, base_service_id, addon_ids,
+        (customer_name, whatsapp_phone, email, barber_id, base_service_id, addon_ids,
          starts_at, ends_at, status, notes, address, language,
          price_idr_total, duration_min_total)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
     .bind(
       b.customer_name,
       b.whatsapp_phone,
+      b.email ?? null,
       b.barber_id,
       b.base_service_id,
       b.addon_ids,

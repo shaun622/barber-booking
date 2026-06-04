@@ -40,6 +40,7 @@ export const POST: RequestHandler = async ({ request, cookies, platform, getClie
   const body = (await request.json().catch(() => ({}))) as {
     customer_name?: string;
     whatsapp_phone?: string;
+    email?: string;
     address?: string | null;
     turnstileToken?: string;
     notes?: string;
@@ -51,6 +52,9 @@ export const POST: RequestHandler = async ({ request, cookies, platform, getClie
   const phone = (body.whatsapp_phone ?? '').replace(/\s/g, '');
   if (!name || name.length > 100) throw error(400, 'invalid_name');
   if (!/^\+?\d{8,15}$/.test(phone)) throw error(400, 'invalid_phone');
+  const email = (body.email ?? '').trim() || null;
+  if (email && (email.length > 254 || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)))
+    throw error(400, 'invalid_email');
 
   if (env.TURNSTILE_SECRET) {
     const ok = await verifyTurnstile(body.turnstileToken ?? '', env.TURNSTILE_SECRET, ip);
@@ -112,6 +116,7 @@ export const POST: RequestHandler = async ({ request, cookies, platform, getClie
   const id = await createBooking(db, {
     customer_name: name,
     whatsapp_phone: phone,
+    email,
     barber_id: assignedBarberId,
     base_service_id: base.id,
     addon_ids: JSON.stringify(addons.map((a) => a.id)),
@@ -130,6 +135,7 @@ export const POST: RequestHandler = async ({ request, cookies, platform, getClie
     id,
     customer_name: name,
     whatsapp_phone: phone,
+    email,
     barber_id: assignedBarberId,
     base_service_id: base.id,
     addon_ids: JSON.stringify(addons.map((a) => a.id)),

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from '$app/state';
   import { booking, ui, seedBooking } from '$lib/booking.svelte';
+  import MapCard from '$lib/components/MapCard.svelte';
   import type { PageData } from './$types';
   let { data }: { data: PageData } = $props();
 
@@ -58,5 +59,9 @@
       {t.wa}
     </a>
     <a href="/" class="text-sm text-[var(--color-bone-dim)] hover:text-[var(--color-bone)] transition">{t.home}</a>
+  </div>
+
+  <div class="mt-12 text-left rise rise-4">
+    <MapCard lang={data.lang} height="h-52" />
   </div>
 </div>

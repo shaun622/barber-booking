@@ -17,6 +17,9 @@
           consent: 'Dengan mengirim, Anda setuju dihubungi via WhatsApp.',
           submit: 'Kirim booking',
           submitting: 'Mengirim…',
+          emailLabel: 'Email',
+          optional: '(opsional)',
+          eEmail: 'Masukkan email yang valid, atau kosongkan.',
           eName: 'Mohon masukkan nama Anda.',
           ePhone: 'Mohon masukkan nomor WhatsApp yang valid.',
           eAddr: 'Alamat wajib untuk panggilan ke rumah.',
@@ -35,6 +38,9 @@
           consent: 'By submitting you agree to be contacted on WhatsApp.',
           submit: 'Request booking',
           submitting: 'Submitting…',
+          emailLabel: 'Email',
+          optional: '(optional)',
+          eEmail: 'Please enter a valid email, or leave it blank.',
           eName: 'Please enter your name.',
           ePhone: 'Please enter a valid WhatsApp number.',
           eAddr: 'Address is required for on-call bookings.',
@@ -47,6 +53,7 @@
 
   let name = $state('');
   let phone = $state('+62');
+  let email = $state('');
   let address = $state('');
   let turnstileToken = $state('');
   let submitting = $state(false);
@@ -71,6 +78,7 @@
     errorMsg = null;
     if (!name.trim()) return (errorMsg = t.eName);
     if (!/^\+?\d{8,15}$/.test(phone.replace(/\s/g, ''))) return (errorMsg = t.ePhone);
+    if (email.trim() && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim())) return (errorMsg = t.eEmail);
     if (requiresAddress && !address.trim()) return (errorMsg = t.eAddr);
 
     submitting = true;
@@ -81,6 +89,7 @@
         body: JSON.stringify({
           customer_name: name.trim(),
           whatsapp_phone: phone.replace(/\s/g, ''),
+          email: email.trim() || null,
           address: requiresAddress ? address.trim() : null,
           turnstileToken
         })
@@ -122,6 +131,13 @@
     <span class="text-sm font-medium text-[var(--color-bone-dim)]">{t.phone}</span>
     <input bind:value={phone} type="tel" inputmode="tel" required autocomplete="tel" placeholder="+62…" class="field mt-1.5 tnum" />
     <span class="text-xs text-[var(--color-bone-faint)] mt-1.5 block">{t.phoneHint}</span>
+  </label>
+
+  <label class="block">
+    <span class="text-sm font-medium text-[var(--color-bone-dim)]">
+      {t.emailLabel} <span class="text-[var(--color-bone-faint)] font-normal">{t.optional}</span>
+    </span>
+    <input bind:value={email} type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" class="field mt-1.5" />
   </label>
 
   {#if requiresAddress}
