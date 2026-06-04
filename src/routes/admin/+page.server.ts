@@ -60,6 +60,18 @@ export const actions: Actions = {
     return { ok: true };
   },
 
+  setBarber: async ({ request, platform }) => {
+    if (!platform) return fail(500);
+    const form = await request.formData();
+    const id = Number(form.get('id'));
+    const raw = form.get('barber_id');
+    const barberId = raw && raw !== '' ? Number(raw) : null;
+    await platform.env.DB.prepare(`UPDATE bookings SET barber_id = ? WHERE id = ?`)
+      .bind(barberId, id)
+      .run();
+    return { ok: true };
+  },
+
   block: async ({ request, platform }) => {
     if (!platform) return fail(500);
     const form = await request.formData();
