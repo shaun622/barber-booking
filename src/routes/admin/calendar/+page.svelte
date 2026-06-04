@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { enhance } from '$app/forms';
   import type { PageData } from './$types';
   import { BARBER_PALETTE, ANY_SWATCH, STATUS_INFO } from '$lib/barberColor';
   let { data }: { data: PageData } = $props();
@@ -137,13 +138,16 @@
             </div>
             <div class="mt-3 flex flex-wrap items-center gap-2 text-sm">
               <a href={waLink(b)} target="_blank" rel="noopener" class="btn btn-brass !py-1.5 !px-3 !text-sm">WhatsApp</a>
-              <form method="POST" action="?/setBarber" class="flex items-center gap-1">
+              <form method="POST" action="?/setBarber" use:enhance class="flex items-center gap-1">
                 <input type="hidden" name="id" value={b.id} />
-                <select name="barber_id" class="field !py-1.5 !w-auto !text-sm">
-                  <option value="" selected={b.barber_id == null}>Any</option>
+                <select
+                  name="barber_id"
+                  onchange={(e) => e.currentTarget.form?.requestSubmit()}
+                  class="field !py-1.5 !w-auto !text-sm">
+                  <option value="" selected={b.barber_id == null}>Any barber</option>
                   {#each data.barbers as bb (bb.id)}<option value={bb.id} selected={b.barber_id === bb.id}>{bb.name}</option>{/each}
                 </select>
-                <button class="pill">Reassign</button>
+                <button class="pill">Save</button>
               </form>
               <form method="POST" action="?/setStatus"><input type="hidden" name="id" value={b.id} /><input type="hidden" name="status" value="confirmed" /><button class="pill">Confirm</button></form>
               <form method="POST" action="?/setStatus"><input type="hidden" name="id" value={b.id} /><input type="hidden" name="status" value="completed" /><button class="pill">Completed</button></form>
