@@ -71,10 +71,10 @@ async function sendOwnerEmail(ctx: NotifyContext, body: string): Promise<void> {
   }
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+    headers: { Authorization: `Bearer ${env.RESEND_API_KEY.trim()}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      from: env.EMAIL_FROM,
-      to: env.EMAIL_TO_OWNER,
+      from: env.EMAIL_FROM.trim(),
+      to: env.EMAIL_TO_OWNER.trim(),
       subject: `New booking #${ctx.booking.id} — ${ctx.booking.customer_name}`,
       text: body
     })
@@ -210,9 +210,9 @@ async function sendCustomerEmail(ctx: NotifyContext): Promise<void> {
   const t = customerCopy(booking.language);
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+    headers: { Authorization: `Bearer ${env.RESEND_API_KEY.trim()}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      from: env.EMAIL_FROM,
+      from: env.EMAIL_FROM.trim(),
       to: booking.email,
       subject: t.subject,
       text: buildCustomerText(ctx),
