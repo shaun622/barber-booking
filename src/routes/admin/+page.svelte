@@ -19,78 +19,75 @@
         : `Hi ${b.customer_name}, confirming your Balis Barber booking on ${fmt(b.starts_at)}. See you then!`;
     return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
   }
+
+  function statusClass(s: string) {
+    if (s === 'pending') return 'bg-amber-500/15 text-amber-300';
+    if (s === 'confirmed' || s === 'completed') return 'bg-emerald-500/15 text-emerald-300';
+    return 'bg-white/10 text-[var(--color-bone-dim)]';
+  }
 </script>
 
-<div class="flex items-center justify-between mb-4">
-  <h1 class="text-xl font-semibold">Bookings</h1>
-  <div class="flex gap-2 text-sm">
-    <a
-      href="?view=today"
-      class:font-semibold={data.view === 'today'}
-      class="px-3 py-1 rounded border border-neutral-300">Today</a>
-    <a
-      href="?view=week"
-      class:font-semibold={data.view === 'week'}
-      class="px-3 py-1 rounded border border-neutral-300">Next 7 days</a>
-    <a href="/admin/blocks" class="px-3 py-1 rounded border border-neutral-300">Block time</a>
+<div class="mx-auto max-w-4xl px-5 sm:px-6 py-8">
+  <div class="flex flex-wrap items-center justify-between gap-4 mb-7">
+    <h1 class="display text-3xl">Bookings</h1>
+    <div class="flex gap-2 text-sm">
+      <a href="?view=today" class="pill {data.view === 'today' ? 'pill-active' : ''}">Today</a>
+      <a href="?view=week" class="pill {data.view === 'week' ? 'pill-active' : ''}">Next 7 days</a>
+      <a href="/admin/blocks" class="pill">Block time</a>
+    </div>
   </div>
+
+  {#if data.bookings.length === 0}
+    <div class="glass p-10 text-center text-[var(--color-bone-dim)]">No bookings.</div>
+  {:else}
+    <div class="grid gap-3">
+      {#each data.bookings as b (b.id)}
+        <div class="glass p-5">
+          <div class="flex flex-wrap items-start gap-3 justify-between">
+            <div class="min-w-0">
+              <div class="font-medium">
+                {b.customer_name}
+                <span class="text-[var(--color-bone-dim)] tnum font-normal">· {b.whatsapp_phone}</span>
+              </div>
+              <div class="text-sm text-[var(--color-bone-faint)] mt-0.5 tnum">
+                #{b.id} · {fmt(b.starts_at)} · {b.duration_min_total} min · {idr(b.price_idr_total)}
+              </div>
+              <div class="text-sm text-[var(--color-bone-dim)] mt-1">
+                {b.service_name} · {b.barber_name ?? 'Any'}
+                {#if b.address}<br /><span class="text-[var(--color-bone-faint)]">→ {b.address}</span>{/if}
+              </div>
+            </div>
+            <span class="rounded-full px-2.5 py-1 text-xs {statusClass(b.status)}">{b.status}</span>
+          </div>
+
+          <div class="mt-4 flex flex-wrap gap-2 text-sm">
+            <a href={waLink(b)} target="_blank" rel="noopener" class="btn btn-brass !py-1.5 !px-3 !text-sm">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.4-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.2 0-.3 0-.5l-.7-1.7c-.2-.5-.4-.4-.6-.4h-.4a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c2.1.8 2.1.5 2.5.5a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.2c-.1-.2-.3-.2-.5-.3z" /></svg>
+              WhatsApp
+            </a>
+            <form method="POST" action="?/setStatus">
+              <input type="hidden" name="id" value={b.id} />
+              <input type="hidden" name="status" value="confirmed" />
+              <button class="pill">Confirm</button>
+            </form>
+            <form method="POST" action="?/setStatus">
+              <input type="hidden" name="id" value={b.id} />
+              <input type="hidden" name="status" value="completed" />
+              <button class="pill">Completed</button>
+            </form>
+            <form method="POST" action="?/setStatus">
+              <input type="hidden" name="id" value={b.id} />
+              <input type="hidden" name="status" value="no_show" />
+              <button class="pill">No-show</button>
+            </form>
+            <form method="POST" action="?/setStatus">
+              <input type="hidden" name="id" value={b.id} />
+              <input type="hidden" name="status" value="cancelled" />
+              <button class="pill !text-red-300">Cancel</button>
+            </form>
+          </div>
+        </div>
+      {/each}
+    </div>
+  {/if}
 </div>
-
-{#if data.bookings.length === 0}
-  <p class="text-neutral-500">No bookings.</p>
-{:else}
-  <div class="grid gap-3">
-    {#each data.bookings as b (b.id)}
-      <div class="rounded-xl border border-neutral-200 bg-white p-4">
-        <div class="flex flex-wrap items-baseline gap-2 justify-between">
-          <div>
-            <div class="font-medium">{b.customer_name} · {b.whatsapp_phone}</div>
-            <div class="text-sm text-neutral-500">
-              #{b.id} · {fmt(b.starts_at)} · {b.duration_min_total} min · {idr(b.price_idr_total)}
-            </div>
-            <div class="text-sm">
-              {b.service_name} · {b.barber_name ?? 'Any'}
-              {#if b.address}<br /><span class="text-neutral-500">→ {b.address}</span>{/if}
-            </div>
-          </div>
-          <div class="text-sm">
-            <span
-              class="rounded-full px-2 py-0.5 text-xs"
-              class:bg-yellow-100={b.status === 'pending'}
-              class:bg-green-100={b.status === 'confirmed' || b.status === 'completed'}
-              class:bg-neutral-200={b.status === 'cancelled' || b.status === 'no_show'}
-              >{b.status}</span>
-          </div>
-        </div>
-
-        <div class="mt-3 flex flex-wrap gap-2 text-sm">
-          <a
-            href={waLink(b)}
-            target="_blank"
-            rel="noopener"
-            class="px-3 py-1 rounded bg-green-600 text-white">WhatsApp</a>
-          <form method="POST" action="?/setStatus">
-            <input type="hidden" name="id" value={b.id} />
-            <input type="hidden" name="status" value="confirmed" />
-            <button class="px-3 py-1 rounded border border-neutral-300">Confirm</button>
-          </form>
-          <form method="POST" action="?/setStatus">
-            <input type="hidden" name="id" value={b.id} />
-            <input type="hidden" name="status" value="completed" />
-            <button class="px-3 py-1 rounded border border-neutral-300">Completed</button>
-          </form>
-          <form method="POST" action="?/setStatus">
-            <input type="hidden" name="id" value={b.id} />
-            <input type="hidden" name="status" value="no_show" />
-            <button class="px-3 py-1 rounded border border-neutral-300">No-show</button>
-          </form>
-          <form method="POST" action="?/setStatus">
-            <input type="hidden" name="id" value={b.id} />
-            <input type="hidden" name="status" value="cancelled" />
-            <button class="px-3 py-1 rounded border border-neutral-300 text-red-600">Cancel</button>
-          </form>
-        </div>
-      </div>
-    {/each}
-  </div>
-{/if}

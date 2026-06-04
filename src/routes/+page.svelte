@@ -1,63 +1,102 @@
 <script lang="ts">
   import type { PageData } from './$types';
   let { data }: { data: PageData } = $props();
+
   const t = $derived(
     data.lang === 'id'
       ? {
-          title: 'Pesan Janji',
-          sub: 'Pilih kategori layanan untuk mulai.',
+          eyebrow: 'Sanur · Bali',
+          title: 'Tampil tajam,',
+          titleEm: 'tanpa antre.',
+          sub: 'Pesan kursi Anda di Balis Barber. Pilih layanan, barber, dan waktu — kami konfirmasi lewat WhatsApp.',
+          choose: 'Pilih kategori',
           pkg: 'Paket',
-          pkgDesc: 'Tarif diskon untuk tampilan terbaik',
+          pkgDesc: 'Tarif hemat untuk tampilan terbaik Anda.',
           onsite: 'Layanan di Tempat',
-          onsiteDesc: 'Potong rambut, cukur, dan styling di barbershop kami',
+          onsiteDesc: 'Potong, cukur, dan styling di barbershop kami.',
           oncall: 'Panggilan ke Rumah',
-          oncallDesc: 'Barber profesional datang ke tempat Anda',
-          group: 'Booking untuk 2+ orang? WhatsApp kami'
+          oncallDesc: 'Barber profesional datang ke lokasi Anda.',
+          from: 'mulai',
+          group: 'Booking untuk 2+ orang? WhatsApp kami',
+          groupMsg: 'Halo, saya ingin booking untuk lebih dari 1 orang.'
         }
       : {
-          title: 'Book an Appointment',
-          sub: 'Choose a service category to begin.',
+          eyebrow: 'Sanur · Bali',
+          title: 'Look sharp,',
+          titleEm: 'skip the queue.',
+          sub: 'Reserve your chair at Balis Barber. Choose a service, your barber, and a time — we confirm by WhatsApp.',
+          choose: 'Choose a category',
           pkg: 'Packages',
-          pkgDesc: 'Discounted rates to keep you looking your best',
+          pkgDesc: 'Discounted rates to keep you looking your best.',
           onsite: 'On-Site Services',
-          onsiteDesc: 'Premium grooming at our Sanur shop',
-          oncall: 'On-Call Services',
-          oncallDesc: 'Professional grooming at your location',
-          group: 'Booking for 2+ people? WhatsApp us'
+          onsiteDesc: 'Cuts, shaves and styling at our Sanur shop.',
+          oncall: 'On-Call Service',
+          oncallDesc: 'A professional barber comes to your location.',
+          from: 'from',
+          group: 'Booking for 2+ people? WhatsApp us',
+          groupMsg: 'Hi, I’d like to book for more than one person.'
         }
   );
+
+  const cats = $derived([
+    { key: 'package', name: t.pkg, desc: t.pkgDesc, price: data.fromPrice.package },
+    { key: 'onsite', name: t.onsite, desc: t.onsiteDesc, price: data.fromPrice.onsite },
+    { key: 'oncall', name: t.oncall, desc: t.oncallDesc, price: data.fromPrice.oncall }
+  ]);
+
+  function idr(n: number) {
+    return 'IDR ' + n.toLocaleString('id-ID');
+  }
 </script>
 
-<h1 class="text-2xl font-semibold tracking-tight">{t.title}</h1>
-<p class="text-neutral-600 mt-1">{t.sub}</p>
+<div class="mx-auto max-w-6xl px-5 sm:px-6">
+  <!-- Hero -->
+  <section class="pt-14 sm:pt-20 pb-10">
+    <p class="eyebrow rise rise-1">{t.eyebrow}</p>
+    <h1 class="display text-[2.7rem] sm:text-6xl mt-4 rise rise-2">
+      {t.title}<br /><span class="brass-text">{t.titleEm}</span>
+    </h1>
+    <p class="mt-5 max-w-xl text-[var(--color-bone-dim)] text-base sm:text-lg leading-relaxed rise rise-3">
+      {t.sub}
+    </p>
+  </section>
 
-<nav class="mt-6 grid gap-3">
-  <a
-    href="/service?cat=package"
-    class="block rounded-xl border border-neutral-200 bg-white p-5 hover:border-neutral-900 transition">
-    <div class="font-medium">{t.pkg}</div>
-    <div class="text-sm text-neutral-500 mt-0.5">{t.pkgDesc}</div>
-  </a>
-  <a
-    href="/service?cat=onsite"
-    class="block rounded-xl border border-neutral-200 bg-white p-5 hover:border-neutral-900 transition">
-    <div class="font-medium">{t.onsite}</div>
-    <div class="text-sm text-neutral-500 mt-0.5">{t.onsiteDesc}</div>
-  </a>
-  <a
-    href="/service?cat=oncall"
-    class="block rounded-xl border border-neutral-200 bg-white p-5 hover:border-neutral-900 transition">
-    <div class="font-medium">{t.oncall}</div>
-    <div class="text-sm text-neutral-500 mt-0.5">{t.oncallDesc}</div>
-  </a>
-</nav>
+  <!-- Category cards -->
+  <p class="eyebrow mb-4 rise rise-3">{t.choose}</p>
+  <div class="grid gap-4 sm:grid-cols-3 pb-4">
+    {#each cats as c, i (c.key)}
+      <a
+        href="/service?cat={c.key}"
+        class="glass card-i p-6 flex flex-col min-h-[12rem] rise rise-{i + 3}">
+        <div class="flex-1">
+          <h2 class="display text-2xl">{c.name}</h2>
+          <p class="mt-2 text-sm text-[var(--color-bone-dim)] leading-relaxed">{c.desc}</p>
+        </div>
+        <div class="mt-6 flex items-center justify-between">
+          <span class="text-sm text-[var(--color-bone-faint)] tnum">
+            {t.from} <span class="text-[var(--color-bone)]">{idr(c.price)}</span>
+          </span>
+          <span
+            class="btn-icon group-hover:!border-[rgba(201,169,97,0.5)]"
+            aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </span>
+        </div>
+      </a>
+    {/each}
+  </div>
 
-<a
-  href="https://wa.me/6281337995251?text={encodeURIComponent(
-    data.lang === 'id'
-      ? 'Halo, saya ingin booking untuk lebih dari 1 orang.'
-      : 'Hi, I’d like to book for more than one person.'
-  )}"
-  class="mt-6 block text-center text-sm text-neutral-600 underline">
-  {t.group}
-</a>
+  <!-- Group CTA -->
+  <div class="py-8">
+    <a
+      href="https://wa.me/6281337995251?text={encodeURIComponent(t.groupMsg)}"
+      target="_blank"
+      rel="noopener"
+      class="inline-flex items-center gap-2 text-sm text-[var(--color-bone-dim)] hover:text-[var(--color-bone)] transition">
+      <span class="h-px w-8 bg-[var(--color-line-strong)]"></span>
+      {t.group}
+    </a>
+  </div>
+</div>

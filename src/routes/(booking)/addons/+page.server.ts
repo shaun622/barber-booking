@@ -10,10 +10,5 @@ export const load: PageServerLoad = async ({ cookies, platform }) => {
   const all = await listServices(platform.env.DB);
   const base = all.find((s) => s.id === flow.baseServiceId);
   if (!base) throw redirect(302, '/');
-  const addons = all.filter((s) => s.category === 'addon');
-  return {
-    base,
-    addons,
-    selectedAddonIds: flow.addonIds
-  };
+  return { addons: all.filter((s) => s.category === 'addon') };
 };
