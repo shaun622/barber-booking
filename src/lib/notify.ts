@@ -83,21 +83,42 @@ async function sendOwnerEmail(ctx: NotifyContext, body: string): Promise<void> {
 }
 
 async function sendOwnerWhatsApp(ctx: NotifyContext, body: string): Promise<void> {
-  const { env } = ctx;
+  const { env, booking, barber } = ctx;
   if (!env.WHATSAPP_TOKEN || !env.WHATSAPP_PHONE_ID || !env.WHATSAPP_OWNER_NUMBER) {
     console.warn('[notify] owner whatsapp skipped — env not configured');
     return;
   }
-  const url = `https://graph.facebook.com/v21.0/${env.WHATSAPP_PHONE_ID}/messages`;
+  const url = `https://graph.facebook.com/v21.0/${env.WHATSAPP_PHONE_ID.trim()}/messages`;
+  const to = env.WHATSAPP_OWNER_NUMBER.trim();
+
+  // Template mode (delivers anytime) when a template name is configured;
+  // otherwise free-form text (only delivers within a 24h session — fine for testing).
+  const payload = env.WHATSAPP_TEMPLATE_NAME
+    ? {
+        messaging_product: 'whatsapp',
+        to,
+        type: 'template',
+        template: {
+          name: env.WHATSAPP_TEMPLATE_NAME.trim(),
+          language: { code: (env.WHATSAPP_TEMPLATE_LANG ?? 'en').trim() },
+          components: [
+            {
+              type: 'body',
+              parameters: [
+                { type: 'text', text: booking.customer_name },
+                { type: 'text', text: formatWitaTime(booking.starts_at) },
+                { type: 'text', text: barber ? barber.name : 'Any' }
+              ]
+            }
+          ]
+        }
+      }
+    : { messaging_product: 'whatsapp', to, type: 'text', text: { body } };
+
   const res = await fetch(url, {
     method: 'POST',
-    headers: { Authorization: `Bearer ${env.WHATSAPP_TOKEN}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      messaging_product: 'whatsapp',
-      to: env.WHATSAPP_OWNER_NUMBER,
-      type: 'text',
-      text: { body }
-    })
+    headers: { Authorization: `Bearer ${env.WHATSAPP_TOKEN.trim()}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
   });
   if (!res.ok) console.error('[notify] owner whatsapp failed', res.status, await res.text());
 }

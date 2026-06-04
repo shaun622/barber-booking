@@ -25,6 +25,8 @@ declare global {
         WHATSAPP_TOKEN?: string;
         WHATSAPP_PHONE_ID?: string;
         WHATSAPP_OWNER_NUMBER?: string;
+        WHATSAPP_TEMPLATE_NAME?: string;
+        WHATSAPP_TEMPLATE_LANG?: string;
         SHOP_TZ?: string;
         SHOP_WHATSAPP?: string;
       };
