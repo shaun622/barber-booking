@@ -13,7 +13,7 @@
 </script>
 
 <div class="min-h-screen flex flex-col">
-  <header class="sticky top-0 z-40 border-b border-[var(--color-line)] bg-[rgba(11,11,13,0.72)] backdrop-blur-xl">
+  <header class="sticky top-0 z-40 border-b border-[var(--color-line)] bg-[rgba(244,239,229,0.8)] backdrop-blur-xl">
     <div class="mx-auto max-w-6xl flex items-center justify-between px-5 sm:px-6 h-16">
       <a href="/" class="flex items-baseline gap-2 group">
         <span class="display text-[1.35rem] leading-none brass-text">Balis Barber</span>

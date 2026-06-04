@@ -67,7 +67,7 @@
     {#each cats as c, i (c.key)}
       <a
         href="/service?cat={c.key}"
-        class="glass card-i p-6 flex flex-col min-h-[12rem] rise rise-{i + 3}">
+        class="group glass card-i p-6 flex flex-col min-h-[12rem] rise rise-{i + 3}">
         <div class="flex-1">
           <h2 class="display text-2xl">{c.name}</h2>
           <p class="mt-2 text-sm text-[var(--color-bone-dim)] leading-relaxed">{c.desc}</p>
