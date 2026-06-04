@@ -165,7 +165,7 @@
 </div>
 
 <!-- Summary (mobile sticky bar) -->
-<div class="surface-dark lg:hidden fixed inset-x-0 bottom-0 z-40 border-t border-[var(--color-line)] bg-[rgba(13,13,15,0.92)] backdrop-blur-xl px-5 py-3 rounded-t-2xl">
+<div class="surface-dark lg:hidden fixed inset-x-0 bottom-0 z-40 border-t border-[var(--color-line)] bg-[rgba(28,24,20,0.95)] backdrop-blur-xl px-5 py-3 rounded-t-2xl">
   <div class="flex items-center gap-4">
     <div class="min-w-0 flex-1">
       {#if booking.base}

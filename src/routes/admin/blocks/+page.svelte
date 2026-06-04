@@ -16,8 +16,8 @@
     <label class="block">
       <span class="text-sm text-[var(--color-bone-dim)]">Barber</span>
       <select name="barber_id" class="field mt-1.5">
-        <option value="" class="bg-[var(--color-ink-2)]">All barbers</option>
-        {#each data.barbers as b}<option value={b.id} class="bg-[var(--color-ink-2)]">{b.name}</option>{/each}
+        <option value="">All barbers</option>
+        {#each data.barbers as b}<option value={b.id}>{b.name}</option>{/each}
       </select>
     </label>
     <label class="block">

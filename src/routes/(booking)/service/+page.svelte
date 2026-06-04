@@ -97,7 +97,7 @@
             </p>
           {/if}
           <div class="mt-3 text-base font-medium tnum">
-            {#if s.price_from_only}<span class="text-sm text-[var(--color-bone-dim)]">{t.from}</span> {/if}{idr(s.price_idr)}
+            {#if s.price_from_only}<span class="text-sm text-[var(--color-bone-dim)]">{t.from}&nbsp;</span>{/if}{idr(s.price_idr)}
           </div>
         </div>
 

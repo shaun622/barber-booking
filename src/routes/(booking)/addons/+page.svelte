@@ -47,7 +47,7 @@
           <h3 class="font-medium">{serviceName(a, data.lang)}</h3>
           <div class="text-sm text-[var(--color-bone-faint)] mt-0.5 tnum">+{a.duration_min} {t.min}</div>
           <div class="mt-2 text-sm font-medium tnum">
-            {#if a.price_from_only}<span class="text-[var(--color-bone-dim)]">{t.from}</span> {/if}{idr(a.price_idr)}
+            {#if a.price_from_only}<span class="text-[var(--color-bone-dim)]">{t.from}&nbsp;</span>{/if}{idr(a.price_idr)}
           </div>
         </div>
         <span

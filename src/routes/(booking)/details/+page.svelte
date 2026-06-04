@@ -137,7 +137,7 @@
   {/if}
 
   {#if errorMsg}
-    <div class="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">{errorMsg}</div>
+    <div class="text-sm text-red-600 bg-red-500/10 border border-red-500/25 rounded-lg px-3 py-2">{errorMsg}</div>
   {/if}
 
   <p class="text-xs text-[var(--color-bone-faint)]">{t.consent}</p>

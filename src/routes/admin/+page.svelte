@@ -21,9 +21,9 @@
   }
 
   function statusClass(s: string) {
-    if (s === 'pending') return 'bg-amber-500/15 text-amber-300';
-    if (s === 'confirmed' || s === 'completed') return 'bg-emerald-500/15 text-emerald-300';
-    return 'bg-white/10 text-[var(--color-bone-dim)]';
+    if (s === 'pending') return 'bg-amber-500/15 text-amber-700';
+    if (s === 'confirmed' || s === 'completed') return 'bg-emerald-600/15 text-emerald-700';
+    return 'bg-black/5 text-[var(--color-bone-dim)]';
   }
 </script>
 
@@ -83,7 +83,7 @@
             <form method="POST" action="?/setStatus">
               <input type="hidden" name="id" value={b.id} />
               <input type="hidden" name="status" value="cancelled" />
-              <button class="pill !text-red-300">Cancel</button>
+              <button class="pill !text-red-600">Cancel</button>
             </form>
           </div>
         </div>

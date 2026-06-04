@@ -43,7 +43,7 @@
     type="button"
     onclick={pickAny}
     class="glass card-i text-left p-4 flex items-center gap-4 rise rise-1 {booking.barberId === null ? 'is-selected' : ''}">
-    <div class="shrink-0 w-12 h-12 rounded-full grid place-items-center border border-[var(--color-line-strong)] text-[var(--color-brass)]">
+    <div class="shrink-0 w-12 h-12 rounded-full grid place-items-center border border-[var(--color-line-strong)] text-[var(--gold-700)]">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M21 3l-7 7M8 21H3v-5M3 21l7-7" /></svg>
     </div>
     <div class="flex-1 min-w-0">
