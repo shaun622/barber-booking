@@ -20,8 +20,10 @@ async function hmac(secret: string, msg: string): Promise<string> {
   return s;
 }
 
-export async function checkPassword(plain: string, hash: string): Promise<boolean> {
-  return bcrypt.compare(plain, hash);
+export function checkPassword(plain: string, hash: string): boolean {
+  // compareSync (not async compare) — reliable on the Workers runtime.
+  // Trim the hash in case the stored secret picked up a trailing newline.
+  return bcrypt.compareSync(plain, (hash ?? '').trim());
 }
 
 export async function setSession(cookies: Cookies, secret: string): Promise<void> {

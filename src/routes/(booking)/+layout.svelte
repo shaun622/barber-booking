@@ -106,10 +106,8 @@
     <!-- Summary (desktop) -->
     <aside class="hidden lg:block sticky top-24">
       <div class="glass-strong p-6">
-        <div class="flex items-center gap-3">
-          <div class="display text-lg brass-text leading-none">Balis Barber</div>
-        </div>
-        <p class="text-xs text-[var(--color-bone-faint)] mt-1">Sanur Kauh, Denpasar · Bali</p>
+        <span class="brand-logo h-11 w-11" aria-label="Balis Barber"></span>
+        <p class="text-xs text-[var(--color-bone-faint)] mt-2">Sanur Kauh, Denpasar · Bali</p>
 
         <hr class="hairline my-5" />
 

@@ -136,6 +136,15 @@ a {
   color: var(--brass-fg);
 }
 
+/* Brand lockup — white logo rendered as a mask, tinted with currentColor so it
+   adapts to context (charcoal on the cream header, near-white on the charcoal summary). */
+.brand-logo {
+  display: inline-block;
+  background-color: currentColor;
+  -webkit-mask: url('/logo.png') center / contain no-repeat;
+  mask: url('/logo.png') center / contain no-repeat;
+}
+
 /* ──────────────── Surfaces — ivory cards, charcoal anchor ──────────────── */
 .glass {
   background: var(--ivory);
