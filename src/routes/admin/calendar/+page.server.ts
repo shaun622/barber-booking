@@ -12,6 +12,7 @@ export interface CalBooking {
   barber_id: number | null;
   service_name: string | null;
   barber_name: string | null;
+  duration_min_total: number;
 }
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -88,7 +89,7 @@ export const load: PageServerLoad = async ({ url, platform }) => {
   const [res, barbers] = await Promise.all([
     platform.env.DB.prepare(
       `SELECT b.id, b.starts_at, b.customer_name, b.whatsapp_phone, b.status, b.barber_id,
-              s.name_en AS service_name, br.name AS barber_name
+              b.duration_min_total, s.name_en AS service_name, br.name AS barber_name
        FROM bookings b
        LEFT JOIN services s ON s.id = b.base_service_id
        LEFT JOIN barbers br ON br.id = b.barber_id

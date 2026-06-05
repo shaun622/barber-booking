@@ -36,6 +36,75 @@
     const when = `${b.starts_at.slice(8, 10)}/${b.starts_at.slice(5, 7)} ${time(b.starts_at)}`;
     return `https://wa.me/${phone}?text=${encodeURIComponent(`Hi ${b.customer_name}, confirming your Balis Barber booking on ${when}. See you then!`)}`;
   }
+
+  /* ── Day time-grid ── */
+  const HOUR_PX = 78;
+  const PPM = HOUR_PX / 60;
+  const startMinOf = (iso: string) => +iso.slice(11, 13) * 60 + +iso.slice(14, 16);
+  const hourLabel = (m: number) => `${pad(Math.floor(m / 60))}:00`;
+
+  const STATUS_BLOCK: Record<string, { bg: string; fg: string }> = {
+    pending: { bg: '#f7e6c4', fg: '#7a5a16' },
+    confirmed: { bg: '#d6e8f4', fg: '#1f5b86' },
+    completed: { bg: '#d4ecdd', fg: '#1f6e45' },
+    no_show: { bg: '#f0dada', fg: '#8a3d3d' }
+  };
+  const stBlock = (s: string) => STATUS_BLOCK[s] ?? STATUS_BLOCK.pending;
+
+  interface GridCol {
+    id: number | null;
+    name: string;
+    photo: string | null;
+  }
+  const gridCols = $derived.by(() => {
+    const cols: GridCol[] = data.barbers.map((b) => ({ id: b.id, name: b.name, photo: b.photo_url }));
+    const hasAny = dayList.some((b) => b.barber_id == null || !data.barbers.some((x) => x.id === b.barber_id));
+    if (hasAny) cols.push({ id: null, name: 'Any', photo: null });
+    return cols;
+  });
+  function colBookings(colId: number | null) {
+    return dayList.filter((b) =>
+      colId == null
+        ? b.barber_id == null || !data.barbers.some((x) => x.id === b.barber_id)
+        : b.barber_id === colId
+    );
+  }
+  const gridRange = $derived.by(() => {
+    let minS = 540;
+    let maxE = 1140;
+    for (const b of dayList) {
+      const s = startMinOf(b.starts_at);
+      const e = s + (b.duration_min_total ?? 30);
+      if (s < minS) minS = s;
+      if (e > maxE) maxE = e;
+    }
+    return { startMin: Math.floor(minS / 60) * 60, endMin: Math.ceil(maxE / 60) * 60 };
+  });
+  const gridHours = $derived.by(() => {
+    const out: number[] = [];
+    for (let m = gridRange.startMin; m <= gridRange.endMin; m += 60) out.push(m);
+    return out;
+  });
+  const gridHeight = $derived((gridRange.endMin - gridRange.startMin) * PPM);
+
+  let nowMin = $state<number | null>(null);
+  $effect(() => {
+    if (data.anchor !== data.today) {
+      nowMin = null;
+      return;
+    }
+    const upd = () => {
+      const n = new Date();
+      const w = new Date(n.getTime() + (8 * 60 + n.getTimezoneOffset()) * 60_000);
+      nowMin = w.getUTCHours() * 60 + w.getUTCMinutes();
+    };
+    upd();
+    const iv = setInterval(upd, 60_000);
+    return () => clearInterval(iv);
+  });
+
+  let selectedId = $state<number | null>(null);
+  const selectedBooking = $derived(dayList.find((b) => b.id === selectedId) ?? null);
 </script>
 
 <div class="mx-auto max-w-5xl px-5 sm:px-6 py-8">
@@ -121,34 +190,89 @@
       {/each}
     </div>
   {:else}
-    <!-- Day view: actionable agenda -->
+    <!-- Day view: schedule grid -->
     {#if dayList.length === 0}
       <div class="glass p-10 text-center text-[var(--color-bone-dim)]">No bookings this day.</div>
     {:else}
-      <div class="grid gap-3">
-        {#each dayList as b (b.id)}
-          {@const sw = swatch(b.barber_id)}
-          <div class="glass p-4 border-l-[4px]" style="border-color:{sw.bd}">
-            <div class="flex flex-wrap items-start justify-between gap-2">
-              <div>
-                <div class="font-medium"><span class="tnum">{time(b.starts_at)}</span> · {b.customer_name}</div>
-                <div class="text-sm text-[var(--color-bone-dim)] tnum">{b.whatsapp_phone}</div>
-                <div class="text-sm text-[var(--color-bone-dim)]">{b.service_name} · {b.barber_name ?? 'Any'}</div>
+      <div class="rounded-xl border border-[var(--color-line)] bg-[var(--ivory)] overflow-x-auto">
+        <div class="min-w-max">
+          <!-- header: barbers -->
+          <div class="flex border-b border-[var(--color-line)]">
+            <div class="w-12 shrink-0 sticky left-0 z-20 bg-[var(--ivory)]"></div>
+            {#each gridCols as col (col.id ?? 'any')}
+              {@const sw = swatch(col.id)}
+              <div class="w-28 shrink-0 flex flex-col items-center gap-1 py-2.5 border-l border-[var(--color-line)]">
+                {#if col.photo}
+                  <img src={col.photo} alt={col.name} class="w-8 h-8 rounded-full object-cover" />
+                {:else}
+                  <span class="w-8 h-8 rounded-full grid place-items-center text-xs font-semibold" style="background:{sw.bg};color:{sw.bd};">{col.name[0]}</span>
+                {/if}
+                <span class="text-xs font-medium truncate max-w-[6.5rem]">{col.name}</span>
               </div>
-              <span class="text-xs px-2 py-0.5 rounded-full" style="background:{si(b.status).dot}22;color:{si(b.status).dot}">{si(b.status).label}</span>
-            </div>
-            <div class="mt-3 flex flex-wrap items-center gap-2 text-sm">
-              <a href={waLink(b)} target="_blank" rel="noopener" class="btn btn-brass !py-1.5 !px-3 !text-sm">WhatsApp</a>
-              <ReassignBarber id={b.id} barberId={b.barber_id} barbers={data.barbers} />
-              <RescheduleTime id={b.id} startsAt={b.starts_at} />
-              <form method="POST" action="?/setStatus"><input type="hidden" name="id" value={b.id} /><input type="hidden" name="status" value="confirmed" /><button class="pill">Confirm</button></form>
-              <form method="POST" action="?/setStatus"><input type="hidden" name="id" value={b.id} /><input type="hidden" name="status" value="completed" /><button class="pill">Completed</button></form>
-              <form method="POST" action="?/setStatus"><input type="hidden" name="id" value={b.id} /><input type="hidden" name="status" value="no_show" /><button class="pill">No-show</button></form>
-              <form method="POST" action="?/setStatus"><input type="hidden" name="id" value={b.id} /><input type="hidden" name="status" value="cancelled" /><button class="pill !text-red-600">Cancel</button></form>
-            </div>
+            {/each}
           </div>
-        {/each}
+          <!-- body: time axis + columns -->
+          <div class="flex relative">
+            <div class="w-12 shrink-0 sticky left-0 z-20 bg-[var(--ivory)] relative" style="height:{gridHeight}px">
+              {#each gridHours as m (m)}
+                <div class="absolute right-1.5 text-[10px] tnum text-[var(--color-bone-faint)]" style="top:{(m - gridRange.startMin) * PPM - 5}px">{hourLabel(m)}</div>
+              {/each}
+            </div>
+            {#each gridCols as col (col.id ?? 'any')}
+              {@const sw = swatch(col.id)}
+              <div
+                class="w-28 shrink-0 relative border-l border-[var(--color-line)]"
+                style="height:{gridHeight}px;background:repeating-linear-gradient(to bottom, transparent, transparent {HOUR_PX - 1}px, var(--color-line) {HOUR_PX - 1}px, var(--color-line) {HOUR_PX}px);">
+                {#each colBookings(col.id) as b (b.id)}
+                  {@const top = (startMinOf(b.starts_at) - gridRange.startMin) * PPM}
+                  {@const h = Math.max((b.duration_min_total ?? 30) * PPM - 2, 20)}
+                  {@const st = stBlock(b.status)}
+                  <button
+                    type="button"
+                    onclick={() => (selectedId = b.id)}
+                    class="absolute left-1 right-1 rounded-md px-1.5 py-1 text-left overflow-hidden border-l-[3px] {selectedId === b.id ? 'ring-2 ring-[var(--gold-500)] z-10' : ''}"
+                    style="top:{top}px;height:{h}px;background:{st.bg};border-color:{sw.bd};color:{st.fg};">
+                    <div class="text-[10px] font-semibold tnum leading-none">{time(b.starts_at)}</div>
+                    <div class="text-[11px] leading-tight truncate font-medium" style="color:#2a241c;">{b.customer_name}</div>
+                  </button>
+                {/each}
+              </div>
+            {/each}
+            {#if nowMin !== null && nowMin >= gridRange.startMin && nowMin <= gridRange.endMin}
+              <div class="absolute left-12 right-0 pointer-events-none z-10" style="top:{(nowMin - gridRange.startMin) * PPM}px">
+                <div class="h-px bg-red-500"></div>
+                <div class="absolute left-0 -top-1 w-2 h-2 rounded-full bg-red-500"></div>
+              </div>
+            {/if}
+          </div>
+        </div>
       </div>
+
+      {#if selectedBooking}
+        {@const b = selectedBooking}
+        {@const sw = swatch(b.barber_id)}
+        <div class="glass p-4 mt-4 border-l-[4px]" style="border-color:{sw.bd}">
+          <div class="flex flex-wrap items-start justify-between gap-2">
+            <div>
+              <div class="font-medium"><span class="tnum">{time(b.starts_at)}</span> · {b.customer_name}</div>
+              <div class="text-sm text-[var(--color-bone-dim)] tnum">{b.whatsapp_phone}</div>
+              <div class="text-sm text-[var(--color-bone-dim)]">{b.service_name} · {b.barber_name ?? 'Any'}</div>
+            </div>
+            <span class="text-xs px-2 py-0.5 rounded-full" style="background:{si(b.status).dot}22;color:{si(b.status).dot}">{si(b.status).label}</span>
+          </div>
+          <div class="mt-3 flex flex-wrap items-center gap-2 text-sm">
+            <a href={waLink(b)} target="_blank" rel="noopener" class="btn btn-brass !py-1.5 !px-3 !text-sm">WhatsApp</a>
+            <ReassignBarber id={b.id} barberId={b.barber_id} barbers={data.barbers} />
+            <RescheduleTime id={b.id} startsAt={b.starts_at} />
+            <form method="POST" action="?/setStatus"><input type="hidden" name="id" value={b.id} /><input type="hidden" name="status" value="confirmed" /><button class="pill">Confirm</button></form>
+            <form method="POST" action="?/setStatus"><input type="hidden" name="id" value={b.id} /><input type="hidden" name="status" value="completed" /><button class="pill">Completed</button></form>
+            <form method="POST" action="?/setStatus"><input type="hidden" name="id" value={b.id} /><input type="hidden" name="status" value="no_show" /><button class="pill">No-show</button></form>
+            <form method="POST" action="?/setStatus"><input type="hidden" name="id" value={b.id} /><input type="hidden" name="status" value="cancelled" /><button class="pill !text-red-600">Cancel</button></form>
+          </div>
+        </div>
+      {:else}
+        <p class="text-center text-xs text-[var(--color-bone-dim)] mt-3">Tap a booking to confirm, reschedule, reassign or message.</p>
+      {/if}
     {/if}
   {/if}
 
