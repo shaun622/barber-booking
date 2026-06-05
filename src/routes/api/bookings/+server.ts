@@ -11,6 +11,7 @@ import {
 } from '$lib/db';
 import { loadFlow, clearFlow } from '$lib/flow';
 import { computeAvailability } from '$lib/availability';
+import { witaEnd } from '$lib/time';
 import { acquireSlotLock, buildSlotKey, rateLimit } from '$lib/rateLimit';
 import { sendBookingNotifications } from '$lib/notify';
 
@@ -107,11 +108,7 @@ export const POST: RequestHandler = async ({ request, cookies, platform, getClie
   const totalDuration =
     base.duration_min + addons.reduce((s, a) => s + a.duration_min, 0) + base.travel_buffer_min;
   const totalPrice = base.price_idr + addons.reduce((s, a) => s + a.price_idr, 0);
-  const endsAt = new Date(
-    Date.parse(flow.startsAt) + totalDuration * 60_000
-  )
-    .toISOString()
-    .replace('Z', '+00:00');
+  const endsAt = witaEnd(flow.startsAt, totalDuration);
 
   const id = await createBooking(db, {
     customer_name: name,

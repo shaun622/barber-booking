@@ -59,3 +59,14 @@ export function localMinToWitaIso(y: number, mo: number, d: number, minSinceMidn
 export function formatHm(minSinceMidnight: number): string {
   return `${pad2(Math.floor(minSinceMidnight / 60))}:${pad2(minSinceMidnight % 60)}`;
 }
+
+// Given a start instant (ISO at +08:00) and a duration, return the end as a
+// +08:00 wall-clock ISO string, so availability comparisons stay consistent.
+export function witaEnd(startsAt: string, durationMin: number): string {
+  const endMs = Date.parse(startsAt) + durationMin * 60_000;
+  const d = new Date(endMs + 8 * 3600 * 1000); // shift so UTC fields read WITA wall-clock
+  return (
+    `${d.getUTCFullYear()}-${pad2(d.getUTCMonth() + 1)}-${pad2(d.getUTCDate())}` +
+    `T${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}:00+08:00`
+  );
+}

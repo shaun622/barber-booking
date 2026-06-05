@@ -1,6 +1,7 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error, fail } from '@sveltejs/kit';
 import { listBarbers, listServices, type Booking } from '$lib/db';
+import { witaEnd } from '$lib/time';
 
 export interface BookingRow extends Booking {
   service_name: string | null;
@@ -68,6 +69,23 @@ export const actions: Actions = {
     const barberId = raw && raw !== '' ? Number(raw) : null;
     await platform.env.DB.prepare(`UPDATE bookings SET barber_id = ? WHERE id = ?`)
       .bind(barberId, id)
+      .run();
+    return { ok: true };
+  },
+
+  setTime: async ({ request, platform }) => {
+    if (!platform) return fail(500);
+    const form = await request.formData();
+    const id = Number(form.get('id'));
+    const local = String(form.get('starts_local') ?? '');
+    if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(local)) return fail(400, { msg: 'Bad time' });
+    const startsAt = `${local}:00+08:00`;
+    const row = await platform.env.DB.prepare('SELECT duration_min_total FROM bookings WHERE id = ?')
+      .bind(id)
+      .first<{ duration_min_total: number }>();
+    const ends = witaEnd(startsAt, row?.duration_min_total ?? 30);
+    await platform.env.DB.prepare('UPDATE bookings SET starts_at = ?, ends_at = ? WHERE id = ?')
+      .bind(startsAt, ends, id)
       .run();
     return { ok: true };
   },
